@@ -5,7 +5,8 @@
     .module("ShoppingListCheckOff", [])
     .controller("ToBuyController", ToBuyController)
     .controller("AlreadyBoughtController", AlreadyBoughtController)
-    .service("ShoppingListCheckOffService", ShoppingListCheckOffService);
+    .service("ShoppingListCheckOffService", ShoppingListCheckOffService)
+    .filter("totalAngularDollars", TotalAngularDollarsFilter);
 
   ToBuyController.$inject = ["ShoppingListCheckOffService"];
   function ToBuyController(ShoppingListCheckOffService) {
@@ -30,13 +31,13 @@
     const service = this;
 
     let toBuyList = [
-      { name: "cookies", quantity: 9 },
-      { name: "milk", quantity: 1 },
-      { name: "ice cream", quantity: 3 },
-      { name: "soda", quantity: 4 },
-      { name: "gummy bears", quantity: 10 },
-      { name: "chocolate", quantity: 5 },
-      { name: "water", quantity: 1 },
+      { name: "cookies", quantity: 9, pricePerItem: 6 },
+      { name: "milk", quantity: 1, pricePerItem: 5 },
+      { name: "ice cream", quantity: 3, pricePerItem: 7 },
+      { name: "soda", quantity: 4, pricePerItem: 2 },
+      { name: "gummy bears", quantity: 10, pricePerItem: 4 },
+      { name: "chocolate", quantity: 5, pricePerItem: 2 },
+      { name: "water", quantity: 1, pricePerItem: 1 },
     ];
 
     let alreadyBoughtList = [];
@@ -54,6 +55,17 @@
         const boughtItem = toBuyList.splice(itemIndex, 1);
         alreadyBoughtList.unshift(...boughtItem);
       }
+    };
+  }
+
+  function TotalAngularDollarsFilter() {
+    return function (input, quantity) {
+      // if a param is NaN then return empty string
+      if (isNaN(input) || isNaN(quantity)) {
+        return "";
+      }
+
+      return `\$\$\$${(input * quantity).toFixed(2)}`;
     };
   }
 })();
